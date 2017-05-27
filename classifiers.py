@@ -16,7 +16,7 @@ def load_train_features():
 		csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
 		for index, line in enumerate(csv_reader):
 			X.append(line[1:len(line)-1])
-			y.append(str(int(line[len(line)-1])))
+			y.append(int(line[len(line)-1]))
 	print('N_train=',len(X))
 	return (X, y)
 
@@ -24,7 +24,7 @@ def load_train_features():
 def load_test_features():
 	print('\n*** Loading test features ***')
 	X = []
-	with open(TRAIN_FEATURES, "r") as f:
+	with open(TEST_FEATURES, "r") as f:
 		csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
 		for index, line in enumerate(csv_reader):
 			X.append(line[1:])
@@ -64,24 +64,27 @@ def knn(X, y):
 	y_pred = clf.predict_proba(X)
 
 	print('KNN log loss: ', log_loss(y, y_pred))
-	print('KNN score: ', clf.score(X, y))
+	print('KNN score: ', (1-clf.score(X, y))*100)
 
 	return clf
 
 def neural_network(X, y):
 	print("\n*** Initing Neural Network classifier ***")
-	clf = MLPClassifier(hidden_layer_sizes=(10, 5))
+	clf = MLPClassifier(hidden_layer_sizes=(100,50))
 	clf.fit(X, y)
 	y_pred = clf.predict_proba(X)
 
 	print('Neural network log loss: ', log_loss(y, y_pred))
-	print('Neural network score: ', clf.score(X, y))
+	print('Neural network score: ', (clf.score(X, y))*100)
 
 	return clf
 
-def classify(random_learning=False,zero_learning=False,one_learning=False,knn_learning=False,neural_learning=False):
+def xgboots(X, y):
+	return 0
+
+def classify(random_learning=False,zero_learning=False,one_learning=False,knn_learning=False,neural_learning=False,xgb_learning=False):
 	X, y = load_train_features()
-	#X_Kaggle = load_test_features()
+	X_Kaggle = load_test_features()
 
 	if(random_learning):
 		clf_random = random(X, y)
@@ -94,5 +97,9 @@ def classify(random_learning=False,zero_learning=False,one_learning=False,knn_le
 		Util.generate_submission(X_Kaggle, clf_one, 'all_one_prediction.csv')
 	if(knn_learning):
 		clf_knn = knn(X, y)
+		Util.generate_submission(X_Kaggle, clf_knn, 'knn_prediction.csv')
 	if(neural_learning):
 		clf_nn = neural_network(X, y)
+		Util.generate_submission(X_Kaggle, clf_nn, 'neural_network_prediction.csv')
+	if(xgb_learning):
+		clf_xgb = xgboost(X, y)

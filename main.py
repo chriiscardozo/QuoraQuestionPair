@@ -6,7 +6,7 @@ import sys
 def main():
 	if('pre' in sys.argv):
 		start = Util.get_time()
-		preprocessing.generate_features(n_examples=10000,test=False) # pass n_examples=0 to generate all train file
+		preprocessing.generate_features(n_examples=0,test=False,train=False) # pass n_examples=0 to generate all train file
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):

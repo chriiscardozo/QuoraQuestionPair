@@ -11,10 +11,10 @@ def get_time():
     return time.time()
 
 def write_submission(y, filename):
+    print('Saving predictions in ' + filename)
     output = 'test_id,is_duplicate'
     for index,item in enumerate(y):
         output += '\n' + str(index) + ',' + str(y[index])
-    print('Saving predictions in ' + filename)
     f = open(os.path.join(OUTPUT_FOLDER, filename), 'w')
     f.write(output)
     f.close()
@@ -22,6 +22,8 @@ def write_submission(y, filename):
 def generate_submission(X, clf, filename):
     print('Predicting to Kaggle submission: ', filename)
     predict = clf.predict_proba(X)
+    index_from_true = clf.classes_.tolist().index(int(1))
+    predict = [x[index_from_true] for x in predict]
     write_submission(predict, filename)
 
 
