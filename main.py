@@ -11,7 +11,7 @@ def main():
 
 	if('cls' in sys.argv):
 		start = Util.get_time()
-		classifiers.classify(neural_learning=True)
+		classifiers.classify(xgb_learning=True)
 		Util.the_time(start, "classify")
 
 if __name__ == "__main__":

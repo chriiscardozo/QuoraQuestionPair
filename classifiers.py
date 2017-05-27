@@ -1,9 +1,14 @@
+import numpy as np
 import util as Util
 from custom_classifiers import *
 import csv
 from sklearn.metrics import log_loss
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+import xgboost as xgb
+from sklearn import cross_validation
+from random import shuffle
+from sklearn.preprocessing import normalize
 
 TRAIN_FEATURES='files/train_features.csv'
 TEST_FEATURES='files/test_features.csv'
@@ -18,6 +23,13 @@ def load_train_features():
 			X.append(line[1:len(line)-1])
 			y.append(int(line[len(line)-1]))
 	print('N_train=',len(X))
+
+	c = list(zip(X,y))
+	shuffle(c)
+	X,y = zip(*c)
+	X = np.array(X)
+	y = np.array(y)
+	
 	return (X, y)
 
 # Stub X and y
@@ -29,6 +41,7 @@ def load_test_features():
 		for index, line in enumerate(csv_reader):
 			X.append(line[1:])
 	print('N_test=',len(X))
+	X = np.array(X)
 	return X
 
 def dummyOne(X, y):
@@ -79,12 +92,28 @@ def neural_network(X, y):
 
 	return clf
 
-def xgboots(X, y):
-	return 0
+def xgboost(X, y):
+	print("\n*** Initing XGBooster classifier ***")
+
+	# X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
+	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=170, nthread=6, max_depth=8, seed=0, silent=True,
+							subsample=0.85, colsample_bytree=0.85)
+	clf.fit(X, y)
+	y_pred = clf.predict_proba(X)
+
+	print('XGBoost log loss: ', log_loss(y, y_pred))
+	print('XGBoost network score: ', (clf.score(X, y))*100)
+
+	return clf
+
 
 def classify(random_learning=False,zero_learning=False,one_learning=False,knn_learning=False,neural_learning=False,xgb_learning=False):
 	X, y = load_train_features()
 	X_Kaggle = load_test_features()
+
+	# X = X[:100]
+	# y = y[:100]
+	# X_Kaggle = X_Kaggle[:100]
 
 	if(random_learning):
 		clf_random = random(X, y)
@@ -103,3 +132,4 @@ def classify(random_learning=False,zero_learning=False,one_learning=False,knn_le
 		Util.generate_submission(X_Kaggle, clf_nn, 'neural_network_prediction.csv')
 	if(xgb_learning):
 		clf_xgb = xgboost(X, y)
+		Util.generate_submission(X_Kaggle, clf_xgb, 'xgboost_prediction.csv')
