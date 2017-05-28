@@ -6,3 +6,5 @@ TRAIN_DISCRETE_FEATURES='files/train_discrete_features.csv'
 TEST_DISCRETE_FEATURES='files/test_discrete_features.csv'
 TRAIN_MATRIX_FEATURES='files/train_matrix_features.csv'
 TEST_MATRIX_FEATURES='files/test_matrix_features.csv'
+TRAIN_TOKENIZED_FILE="files/train_tokenized.csv"
+TEST_TOKENIZED_FILE="files/test_tokenized.csv"

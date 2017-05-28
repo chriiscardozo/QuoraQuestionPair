@@ -5,11 +5,15 @@ import preprocessing
 import sys
 
 def main():
+	if('tok' in sys.argv):
+		start = Util.get_time()
+		preprocessing.generate_pre_tokens(train=False,test=False)
+		Util.the_time(start, "generating tokens")
 	if('pre' in sys.argv):
 		start = Util.get_time()
 		# pass n_examples=0 to generate all train file
-		preprocessing.generate_features(discrete=False,continuous=False,sparse_matrix=True,
-										n_examples=0,test=False,train=True)
+		preprocessing.generate_features(matrix=True,
+										n_examples=0,test=True,train=True)
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):
