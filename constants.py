@@ -1,0 +1,8 @@
+TRAIN_FILE='files/train.csv'
+TEST_FILE='files/test.csv'
+TRAIN_CONTINUOUS_FEATURES='files/train_continuous_features.csv'
+TEST_CONTINUOUS_FEATURES='files/test_continuous_features.csv'
+TRAIN_DISCRETE_FEATURES='files/train_discrete_features.csv'
+TEST_DISCRETE_FEATURES='files/test_discrete_features.csv'
+TRAIN_MATRIX_FEATURES='files/train_matrix_features.csv'
+TEST_MATRIX_FEATURES='files/test_matrix_features.csv'

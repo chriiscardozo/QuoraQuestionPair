@@ -9,15 +9,13 @@ import xgboost as xgb
 from sklearn import cross_validation
 from random import shuffle
 from sklearn.preprocessing import normalize
+import constants as Constants
 
-TRAIN_FEATURES='files/train_features.csv'
-TEST_FEATURES='files/test_features.csv'
-
-def load_train_features():
+def load_train_features(features_file):
 	print('\n*** Loading train features ***')
 	X = []
 	y = []
-	with open(TRAIN_FEATURES, "r") as f:
+	with open(features_file, "r") as f:
 		csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
 		for index, line in enumerate(csv_reader):
 			X.append(line[1:len(line)-1])
@@ -33,10 +31,10 @@ def load_train_features():
 	return (X, y)
 
 # Stub X and y
-def load_test_features():
+def load_test_features(features_file):
 	print('\n*** Loading test features ***')
 	X = []
-	with open(TEST_FEATURES, "r") as f:
+	with open(features_file, "r") as f:
 		csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
 		for index, line in enumerate(csv_reader):
 			X.append(line[1:])
@@ -108,8 +106,8 @@ def xgboost(X, y):
 
 
 def classify(random_learning=False,zero_learning=False,one_learning=False,knn_learning=False,neural_learning=False,xgb_learning=False):
-	X, y = load_train_features()
-	X_Kaggle = load_test_features()
+	X, y = load_train_features(Constants.TRAIN_MATRIX_FEATURES)
+	#X_Kaggle = load_test_features(Constants.TEST_MATRIX_FEATURES)
 
 	# X = X[:100]
 	# y = y[:100]
@@ -132,4 +130,4 @@ def classify(random_learning=False,zero_learning=False,one_learning=False,knn_le
 		Util.generate_submission(X_Kaggle, clf_nn, 'neural_network_prediction.csv')
 	if(xgb_learning):
 		clf_xgb = xgboost(X, y)
-		Util.generate_submission(X_Kaggle, clf_xgb, 'xgboost_prediction.csv')
+		#Util.generate_submission(X_Kaggle, clf_xgb, 'xgboost_prediction.csv')
