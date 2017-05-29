@@ -13,7 +13,7 @@ def main():
 		start = Util.get_time()
 		# pass n_examples=0 to generate all train file
 		preprocessing.generate_features(matrix=True,
-										n_examples=0,test=True,train=True)
+										n_examples=0,test=False,train=True)
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):

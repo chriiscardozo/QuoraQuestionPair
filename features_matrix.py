@@ -64,16 +64,16 @@ def generate_train_features(n_examples):
 		X3 = vectorizer_equals.fit_transform(corpus3)
 		X = hstack([X1,X2,X3])
 		print('Dimensions before SVD: ', X.shape)
-
-		SVD = TruncatedSVD(n_components=10) 
-		X_train = SVD.fit_transform(X)
-		# Sigma = SVD.explained_variance_ratio_
-		# VT = SVD.components_
-		# print(Sigma)
-
-		# plt.scatter(range(len(Sigma)), Sigma)
-		# plt.show()
 		
+		SVD = TruncatedSVD(n_components=50) 
+		X_train = SVD.fit_transform(X)
+		Sigma = SVD.explained_variance_ratio_
+		VT = SVD.components_
+		print(Sigma)
+
+		plt.scatter(range(len(Sigma)), Sigma)
+		plt.show()
+		exit(0)
 		with open(Constants.TRAIN_MATRIX_FEATURES, 'w') as f:
 			csv_writer = csv.writer(f)
 			for index, item in enumerate(X_train):
