@@ -1,7 +1,7 @@
 import util as Util
 import features_continuous as Continuous
 import features_discrete as Discrete
-import features_matrix as Matrix
+import features_matrix_new as Matrix
 
 import csv
 import constants as Constants
@@ -29,11 +29,11 @@ def generate_features(continuous=False,discrete=False,matrix=False,train=True,te
 		if(train):
 			start = Util.get_time()
 			Matrix.generate_train_features(n_examples)
-			Util.the_time(start, "generating matrix train features")
+			Util.the_time(start, "matrix train features")
 		if(test):
 			start = Util.get_time()
 			Matrix.generate_test_features()
-			Util.the_time(start, "generating matrix test features")
+			Util.the_time(start, "matrix test features")
 
 def generate_pre_tokens(train=False,test=False):
 	if(train): generate_pre_tokens_train()

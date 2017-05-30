@@ -11,14 +11,17 @@ def main():
 		Util.the_time(start, "generating tokens")
 	if('pre' in sys.argv):
 		start = Util.get_time()
-		# pass n_examples=0 to generate all train file
-		preprocessing.generate_features(matrix=True,
-										n_examples=0,test=False,train=True)
+		preprocessing.generate_features(matrix=True,n_examples=0,test=False,train=True)
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):
 		start = Util.get_time()
-		classifiers.classify(xgb_learning=True)
+		nb = xgb = nn = sub = False
+		if('nb' in sys.argv): nb = True
+		if('xgb' in sys.argv): xgb = True
+		if('nn' in sys.argv): nn = True
+		if('sub' in sys.argv): sub = True
+		classifiers.classify(nb_learning=nb,xgb_learning=xgb,nn_learning=nn,submission=sub)
 		Util.the_time(start, "classify")
 
 if __name__ == "__main__":

@@ -27,8 +27,6 @@ def generate_train_features(n_examples):
 		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
 		# next(csv_reader) # jumping the header stuff	e 
 		for index, line in enumerate(csv_reader):
-			#q1 = tokenize_question(line[3])
-			#q2 = tokenize_question(line[4])
 			q1 = line[3].split(' ')
 			q2 = line[4].split(' ')
 			y_train.append(line[5])

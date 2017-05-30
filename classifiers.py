@@ -14,6 +14,14 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix
+
+def generate_confusion_matrix(clf, X, y, name):
+	y_pred = clf.predict(X)
+	print('Confusion matrix for ' + name)
+	cm = confusion_matrix(y, y_pred)
+	print(cm)
+	return cm
 
 def load_train_features(features_file):
 	print('\n*** Loading train features ***')
@@ -34,7 +42,6 @@ def load_train_features(features_file):
 	
 	return (X, y)
 
-# Stub X and y
 def load_test_features(features_file):
 	print('\n*** Loading test features ***')
 	X = []
@@ -45,43 +52,6 @@ def load_test_features(features_file):
 	print('N_test=',len(X))
 	X = np.array(X)
 	return X
-
-def dummyOne(X, y):
-	print('\n*** Initing "one" classifier ***')
-	clf = SimpleClassClassifier(value='1')
-	clf.fit(X, y)
-	y_pred = clf.predict_proba(X)
-	#score = log_loss(y, y_pred)
-	#print('Only "1" log loss: ', score)
-	return clf
-
-def dummyZero(X, y):
-	print('\n*** Initing "zero" classifier ***')
-	clf = SimpleClassClassifier(value='0')
-	clf.fit(X, y)
-	y_pred = clf.predict_proba(X)
-	#score = log_loss(y, y_pred)
-	#print('Only "0" log loss: ', score)
-	return clf
-
-def random(X, y):
-	print("\n*** Initing random classifier ***")
-	clf = RandomClassifier()
-	y_pred = clf.predict_proba(X)
-	score_log = log_loss(y, y_pred)
-	print('Random log loss: ', score_log)
-	return clf
-
-def knn(X, y):
-	print("\n*** Initing KNN classifier ***")
-	clf = KNeighborsClassifier(n_jobs=4)
-	clf.fit(X, y)
-	y_pred = clf.predict_proba(X)
-
-	print('KNN log loss: ', log_loss(y, y_pred))
-	print('KNN score: ', (1-clf.score(X, y))*100)
-
-	return clf
 
 def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 	print("\n*** Initing Neural Network classifier ***")
@@ -102,17 +72,19 @@ def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 	print("NN validation accuracy: ", clf.score(X_test,y_test))
 	print("NN validation log_loss: ", log_loss(y_test,y_pred))
 
+	generate_confusion_matrix(clf, X_test, y_test, 'Neural network')
+
 	return clf
 
 def xgboost(X, y):
 	print("\n*** Initing XGBooster classifier ***")
-	clf = xgb.XGBClassifier(learning_rate=0.05, n_estimators=500, nthread=8, max_depth=20, seed=0, silent=True)
 
-	scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
-	scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
+	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=500, nthread=8, max_depth=6, seed=0, silent=True)
+	# scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
+	# scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
 
-	print("XGBoost accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
-	print("XGBoost log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
+	# print("XGBoost accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
+	# print("XGBoost log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
 
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
 	clf.fit(X_train,y_train)
@@ -120,8 +92,11 @@ def xgboost(X, y):
 	print("XGBoost validation accuracy: ", clf.score(X_test,y_test))
 	print("XGBoost validation log_loss: ", log_loss(y_test,y_pred))
 
+	generate_confusion_matrix(clf, X_test, y_test, 'XGBoost')
+
 	return clf
 
+# training with crossvalidation
 def naive_bayes_clf_cv(X, y, clf, name):
 	scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3,n_jobs=6)
 	scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3,n_jobs=6)
@@ -129,11 +104,15 @@ def naive_bayes_clf_cv(X, y, clf, name):
 	print("Naive Bayes " + name + " accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
 	print("Naive Bayes " + name + " log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
 
+# fit to test validation set
 def naive_bayes_clf_val(X_train, X_test, y_train, y_test, clf, name):
 	clf.fit(X_train, y_train)
 	y_pred = clf.predict_proba(X_test)
 	print('Naive bayes ' + name + ' validation score: ', (clf.score(X_test, y_test))*100)
 	print('Naive bayes ' + name + ' validation log loss: ', log_loss(y_test, y_pred))
+
+	generate_confusion_matrix(clf,X_test,y_test, 'Naive bayes ' + name)
+
 	return clf
 
 def naive_bayes(X, y):
@@ -154,53 +133,29 @@ def naive_bayes(X, y):
 	clf2 = naive_bayes_clf_val(X_train, X_test, y_train, y_test, clf2, 'multinomial')
 	clf3 = naive_bayes_clf_val(X_train, X_test, y_train, y_test, clf3, 'bernoulli')
 
-	return clf1
+	return {'naive_bayes_gaussian': clf1, 'naive_bayes_multinomial': clf2, 'naive_bayes_bernoulli': clf3}
 
-def SVM(X, y):
-	print("\n*** Initing SVM classifier ***")
-	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
-	clf = SVC(probability=True)
+def classify(nn_learning=False,xgb_learning=False,nb_learning=False,submission=False):
+	filename = Constants.TRAIN_MATRIX_FEATURES
+	# filename = Constants.TRAIN_MATRIX_FEATURES+'_semantic.csv'
+	# filename = Constants.TRAIN_MATRIX_FEATURES+'_semantic_svd.csv'
+	print(filename)
 
-	print("Training...")
-	clf.fit(X_train, y_train)
-	print("Predicting...")
-	y_pred = clf.predict_proba(X_train)
+	X, y = load_train_features(filename)
+	clf_dict = {}
 
-	print('SVM log loss (train): ', log_loss(y_train, y_pred))
-	print('SVM score (train): ', (clf.score(X_train, y_train))*100)
-
-	y_pred = clf.predict_proba(X_test)
-	print('SVM log loss (validation): ', log_loss(y_test, y_pred))
-	print('SVM score (validation): ', (clf.score(X_test, y_test))*100)	
-
-	return clf
-
-
-def classify(random_learning=False,zero_learning=False,one_learning=False,knn_learning=False,nn_learning=False,xgb_learning=False,svm_learning=False,nb_learning=False):
-	X, y = load_train_features(Constants.TRAIN_MATRIX_FEATURES)
-	# X_Kaggle = load_test_features(Constants.TEST_MATRIX_FEATURES)
-
-	if(random_learning):
-		clf_random = random(X, y)
-		Util.generate_submission(X_Kaggle, clf_random, 'random_prediction.csv')
-	if(zero_learning):
-		clf_zero = dummyZero(X, y)
-		Util.generate_submission(X_Kaggle, clf_zero, 'all_zero_prediction.csv')
-	if(one_learning):
-		clf_one = dummyOne(X, y)
-		Util.generate_submission(X_Kaggle, clf_one, 'all_one_prediction.csv')
-	if(knn_learning):
-		clf_knn = knn(X, y)
-		Util.generate_submission(X_Kaggle, clf_knn, 'knn_prediction.csv')
-	if(nn_learning):
-		clf_nn = neural_network(X, y)
-		#Util.generate_submission(X_Kaggle, clf_nn, 'neural_network_prediction.csv')
+	if(nb_learning):
+		clf_nb_dict = naive_bayes(X, y)
+		clf_dict.update(clf_nb_dict)
 	if(xgb_learning):
 		clf_xgb = xgboost(X, y)
-		# Util.generate_submission(X_Kaggle, clf_xgb, 'xgboost_prediction.csv')
-	if(svm_learning):
-		clf_svm = SVM(X, y)
-		# Util.generate_submission(X_Kaggle, clf_svm, 'svm_prediction.csv')
-	if(nb_learning):
-		clf_nb = naive_bayes(X, y)
-		# Util.generate_submission(X_Kaggle, clf_nb, 'nb_prediction.csv')
+		clf_dict['xgboost'] = clf_xgb
+	if(nn_learning):
+		clf_nn = neural_network(X, y)
+		clf_dict['neural_network'] = clf_nn
+
+	if(submission):
+		X_Kaggle = load_test_features(Constants.TEST_MATRIX_FEATURES)
+		for clf_name in clf_dict:
+			clf = clf_dict[clf_name]
+			Util.generate_submission(X_Kaggle, clf, clf_name+'.csv')
