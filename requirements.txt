@@ -1,0 +1,8 @@
+nltk
+scipy
+numpy
+scikit-learn
+matplotlib
+xgboost
+distance
+sparsesvd
