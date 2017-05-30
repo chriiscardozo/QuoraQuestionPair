@@ -144,6 +144,12 @@ def classify(nn_learning=False,xgb_learning=False,nb_learning=False,submission=F
 	X, y = load_train_features(filename)
 	clf_dict = {}
 
+	n=50000
+
+	if(n>0):
+		X = X[:n]
+		y = y[:n]
+
 	if(nb_learning):
 		clf_nb_dict = naive_bayes(X, y)
 		clf_dict.update(clf_nb_dict)

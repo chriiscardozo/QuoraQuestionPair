@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes as ax
 from features_generator import *
 from util import *
+from sklearn.feature_extraction.text import CountVectorizer
+import operator
+from nltk.corpus import stopwords
+
 # X = []
 # y = []
 # plt.scatter(X)
@@ -41,12 +45,53 @@ from util import *
 # plt.show()
 
 
-y = [68.2416, 68.1317]
-N = len(y)
-x = range(N)
-width = 1/1.5
-plt.bar(['a','b'], y, width, color="blue")
+# y = [68.2416, 68.1317]
+# N = len(y)
+# x = range(N)
+# width = 1/1.5
+# plt.bar(['a','b'], y, width, color="blue")
 
-plt.show()
+# plt.show()
 # fig = plt.gcf()
 # plot_url = py.plot_mpl(fig, filename='mpl-basic-bar')
+
+
+
+with open('files/train.csv', 'r') as f:
+	corpus1 = []
+	corpus2 = []
+	csv_reader = csv.reader(f, delimiter=',', quotechar='"')
+	for record in csv_reader:
+		corpus1.append(record[3])
+		corpus2.append(record[4])
+
+	vectorizer = CountVectorizer(strip_accents='ascii',binary=True)
+	tok = vectorizer.build_tokenizer()
+	count = {}
+
+	for c in corpus1:
+		for w in tok(c):
+			w = w.lower()
+			if w not in count:
+				count[w] = 1
+			else:
+				count[w] += 1
+	sortedw = sorted(count.items(), key=operator.itemgetter(1))
+	sortedw.reverse()
+	# i=0
+	# for s in sortedw:
+		# print(s)
+		# i += 1
+		# if(i == 100): break
+
+
+corte = sortedw[:1000]
+stoplist = stopwords.words('english')
+i=0
+for p in corte:
+	if p[0] in stoplist:
+		if(p[1] <= 1000):
+			print(p, 'index: ' + str(i))
+	i += 1
+
+print(len(sortedw)) # 67841 palavras diferentes

@@ -83,7 +83,7 @@ def generate_train_features(n_examples):
 
 			X_aux = item.tocsc()
 
-			X_truncated, Sigma, VT = sparsesvd(X_aux, 20)
+			X_truncated, Sigma, VT = sparsesvd(X_aux, 30)
 			X_matrices[index] = X_truncated.transpose()
 			print('New dimensions for X' + str(index+1) + ': ' + str(X_matrices[index].shape))
 			# plt.plot(Sigma)

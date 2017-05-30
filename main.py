@@ -7,7 +7,7 @@ import sys
 def main():
 	if('tok' in sys.argv):
 		start = Util.get_time()
-		preprocessing.generate_pre_tokens(train=False,test=False)
+		preprocessing.generate_pre_tokens(train=True,test=False)
 		Util.the_time(start, "generating tokens")
 	if('pre' in sys.argv):
 		start = Util.get_time()

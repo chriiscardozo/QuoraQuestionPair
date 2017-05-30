@@ -64,10 +64,10 @@ def generate_pre_tokens_test():
 
 def generate_pre_tokens_train():
 	i = 0
-	f_out = open(Constants.TEST_TOKENIZED_FILE, 'w')
+	f_out = open(Constants.TRAIN_TOKENIZED_FILE, 'w')
 	with open(Constants.TRAIN_FILE, 'r') as f:
 		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
-		ext(csv_reader) # jumping the header stuff	e 
+		next(csv_reader) # jumping the header stuff	e 
 		for index, line in enumerate(csv_reader):
 			q1 = tokenize_question(line[3])
 			q2 = tokenize_question(line[4])
