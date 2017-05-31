@@ -74,6 +74,7 @@ def generate_train_features(n_examples):
 		print('Total distinct words: ', len(all_words))
 		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3)
 
+		# uncoment for semantic features before SVD
 		# X_matrices[0] = hstack((X_matrices[0],append_to_X1))
 		# X_matrices[1] = hstack((X_matrices[1],append_to_X2))
 		# X_matrices[2] = hstack((X_matrices[2],append_to_X3))
@@ -83,13 +84,13 @@ def generate_train_features(n_examples):
 
 			X_aux = item.tocsc()
 
-			X_truncated, Sigma, VT = sparsesvd(X_aux, 30)
+			X_truncated, Sigma, VT = sparsesvd(X_aux, 50)
 			X_matrices[index] = X_truncated.transpose()
 			print('New dimensions for X' + str(index+1) + ': ' + str(X_matrices[index].shape))
 			# plt.plot(Sigma)
 			# plt.show()
 
-
+		# uncoment for semantic features after SVD
 		X_matrices.append(append_to_X1)
 		X_matrices.append(append_to_X2)
 		X_matrices.append(append_to_X3)
