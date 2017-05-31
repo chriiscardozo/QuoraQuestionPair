@@ -79,12 +79,12 @@ def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 def xgboost(X, y):
 	print("\n*** Initing XGBooster classifier ***")
 
-	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=200, nthread=8, max_depth=12, seed=0, silent=True)
-	# scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
-	# scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
+	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=1000, nthread=8, max_depth=10, seed=0, silent=True)
+	scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
+	scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
 
-	# print("XGBoost accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
-	# print("XGBoost log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
+	print("XGBoost accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
+	print("XGBoost log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
 
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
 	clf.fit(X_train,y_train)
@@ -136,12 +136,7 @@ def naive_bayes(X, y):
 	return {'naive_bayes_gaussian': clf1, 'naive_bayes_multinomial': clf2, 'naive_bayes_bernoulli': clf3}
 
 def classify(nn_learning=False,xgb_learning=False,nb_learning=False,submission=False):
-	filename = Constants.TRAIN_MATRIX_FEATURES
-	# filename = Constants.TRAIN_MATRIX_FEATURES+'_semantic.csv'
-	# filename = Constants.TRAIN_MATRIX_FEATURES+'_semantic_svd.csv'
-	print(filename)
-
-	X, y = load_train_features(filename)
+	X, y = load_train_features(Constants.TRAIN_MATRIX_FEATURES)
 	clf_dict = {}
 
 	n=0
