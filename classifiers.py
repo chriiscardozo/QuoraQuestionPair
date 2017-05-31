@@ -79,7 +79,7 @@ def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 def xgboost(X, y):
 	print("\n*** Initing XGBooster classifier ***")
 
-	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=500, nthread=8, max_depth=6, seed=0, silent=True)
+	clf = xgb.XGBClassifier(learning_rate=0.15, n_estimators=200, nthread=8, max_depth=12, seed=0, silent=True)
 	# scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
 	# scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
 
@@ -144,7 +144,7 @@ def classify(nn_learning=False,xgb_learning=False,nb_learning=False,submission=F
 	X, y = load_train_features(filename)
 	clf_dict = {}
 
-	n=50000
+	n=0
 
 	if(n>0):
 		X = X[:n]

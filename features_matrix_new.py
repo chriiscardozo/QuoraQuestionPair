@@ -74,9 +74,9 @@ def generate_train_features(n_examples):
 		print('Total distinct words: ', len(all_words))
 		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3)
 
-		# X_matrices[0] = hstack((X_matrices[0],append_to_X1))
-		# X_matrices[1] = hstack((X_matrices[1],append_to_X2))
-		# X_matrices[2] = hstack((X_matrices[2],append_to_X3))
+		X_matrices[0] = hstack((X_matrices[0],append_to_X1))
+		X_matrices[1] = hstack((X_matrices[1],append_to_X2))
+		X_matrices[2] = hstack((X_matrices[2],append_to_X3))
 
 		for index,item in enumerate(X_matrices):
 			print('Dimensions in X' + str(index+1) + ' before SVD: ' + str(item.shape))
