@@ -23,9 +23,7 @@ def tokenize_question(q):
 	for s in sentences:
 		tokenizer = RegexpTokenizer(r'\w+')
 		tokens += tokenizer.tokenize(s.lower())
-	tokens_filtred =[x for x in tokens if x not in ['the','is','to','in','of','do','are','and','for','it','on','does','which','or','if','be','that','with',
-													'have','should','an','from','a','as','will','at','there','did','most','by','so','this','has','their',
-													'am','than','re','ve','having','then','doing']]
+	tokens_filtred =[x for x in tokens if x not in Util.ENGLISH_STOP_WORDS]
 
 	st = PorterStemmer()
 	return [st.stem(x) for x in tokens_filtred]
