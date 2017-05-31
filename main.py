@@ -11,7 +11,7 @@ def main():
 		Util.the_time(start, "generating tokens")
 	if('pre' in sys.argv):
 		start = Util.get_time()
-		preprocessing.generate_features(matrix=True,n_examples=0,test=True,train=False)
+		preprocessing.generate_features(matrix=True,n_examples=0,test=False,train=True)
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):

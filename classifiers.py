@@ -60,11 +60,11 @@ def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 	# X = min_max_scaler.fit_transform(X)
 
 	clf = MLPClassifier(hidden_layer_sizes=layers,activation=activation,solver=solver)
-	scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3,n_jobs=8)
-	scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3,n_jobs=8)
+	# scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3,n_jobs=8)
+	# scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3,n_jobs=8)
 
-	print("NN accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
-	print("NN log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
+	# print("NN accuracy: %0.4f (+/- %0.4f)" % (scores_accuracy.mean()*100, scores_accuracy.std()*100))
+	# print("NN log_loss: %0.4f (+/- %0.4f)" % (-scores_logloss.mean(), scores_logloss.std()))
 
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
 	clf.fit(X_train,y_train)
@@ -79,7 +79,6 @@ def neural_network(X, y,layers=(50,50),activation='relu',solver='adam'):
 def xgboost(X, y):
 	print("\n*** Initing XGBooster classifier ***")
 
-	# scale_classes = y.count(0)/y.count(1)
 	clf = xgb.XGBClassifier(scale_pos_weight=0.63,learning_rate=0.15, n_estimators=500, nthread=8, max_depth=12, seed=0, silent=True)
 	# scores_accuracy = cross_val_score(clf,X,y,scoring='accuracy',cv=3)
 	# scores_logloss = cross_val_score(clf,X,y,scoring='neg_log_loss',cv=3)
@@ -124,9 +123,9 @@ def naive_bayes(X, y):
 	clf1 = GaussianNB()
 	clf2 = MultinomialNB()
 	clf3 = BernoulliNB()
-	naive_bayes_clf_cv(X, y, clf1, 'gaussian')
-	naive_bayes_clf_cv(X, y, clf2, 'multinomial')
-	naive_bayes_clf_cv(X, y, clf3, 'bernoulli')
+	# naive_bayes_clf_cv(X, y, clf1, 'gaussian')
+	# naive_bayes_clf_cv(X, y, clf2, 'multinomial')
+	# naive_bayes_clf_cv(X, y, clf3, 'bernoulli')
 
 	
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
