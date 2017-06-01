@@ -26,6 +26,48 @@ def get_sparses_matrices(corpus1, corpus2, corpus3,vocabulary=None):
 	corpus3 = 0
 	return [X1,X2,X3]
 
+def find_ngrams(input_list, n):
+	return zip(*[input_list[i:] for i in range(n)])
+
+def get_train_vocabulary():
+	corpus1 = []
+	corpus2 = []
+	corpus3 = []
+	i = 0
+
+	with open(Constants.TRAIN_TOKENIZED_FILE) as f:
+		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
+		for index, line in enumerate(csv_reader):
+			q1 = line[3].split(' ')
+			q2 = line[4].split(' ')
+			
+			equals_words = []
+			for t in q1:
+				if t in q2:
+					equals_words.append(t)
+
+			corpus1.append(' '.join(q1))
+			corpus2.append(' '.join(q2))
+			corpus3.append(' '.join(equals_words))
+
+			if(i % 1000 == 0): print(str(i) + '\r', end='')
+			i += 1
+	
+	grams = {}
+	i = 0
+	for corpus in [corpus1,corpus2,corpus3]:
+		for sent in corpus:
+			p = sent.split(' ')
+			g1 = find_ngrams(p, 1)
+			g2 = find_ngrams(p, 2)
+			g3 = find_ngrams(p, 3)
+			for g in [g1,g2,g3]:
+				for tok in g:
+					final = ' '.join(list(tok))
+					if(final not in grams):
+						grams[final] = True
+	return list(grams.keys())
+
 
 def generate_train_features(n_examples):
 	print("*** generating matrix train features ***")
@@ -106,6 +148,7 @@ def generate_train_features(n_examples):
 				line.append(int(y[index]))
 				csv_writer.writerow(line)
 
+
 def generate_test_features():
 	print("*** generating matrix test features ***")
 
@@ -113,12 +156,11 @@ def generate_test_features():
 	corpus2 = []
 	corpus3 = []
 	all_words = {}
-	st = PorterStemmer()
 	append_to_X1 = []
 	append_to_X2 = []
 	append_to_X3 = []
 
-	i = 0
+	vocabulary = get_train_vocabulary()
 
 	with open(Constants.TEST_TOKENIZED_FILE) as f:
 		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
@@ -149,7 +191,7 @@ def generate_test_features():
 			i += 1
 
 		print('Total distinct words: ', len(all_words))
-		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3)
+		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3,vocabulary=vocabulary)
 
 		# uncoment for semantic features before SVD
 		# X_matrices[0] = hstack((X_matrices[0],append_to_X1))
