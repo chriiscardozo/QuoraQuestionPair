@@ -7,11 +7,11 @@ import sys
 def main():
 	if('tok' in sys.argv):
 		start = Util.get_time()
-		preprocessing.generate_pre_tokens(train=True,test=False)
+		preprocessing.generate_pre_tokens(train=True,test=True)
 		Util.the_time(start, "generating tokens")
 	if('pre' in sys.argv):
 		start = Util.get_time()
-		preprocessing.generate_features(matrix=True,n_examples=0,test=True,train=False)
+		preprocessing.generate_features(matrix=True,n_examples=0,test=True,train=True)
 		Util.the_time(start, "preprocessing")
 
 	if('cls' in sys.argv):

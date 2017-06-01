@@ -30,6 +30,7 @@ def find_ngrams(input_list, n):
 	return zip(*[input_list[i:] for i in range(n)])
 
 def get_train_vocabulary():
+	print("*** getting train vocabulary ***")
 	corpus1 = []
 	corpus2 = []
 	corpus3 = []
@@ -83,6 +84,9 @@ def generate_train_features(n_examples):
 
 	i = 0
 
+	vocabulary = get_train_vocabulary()
+	print("train vocabulary length:", len(vocabulary))
+
 	with open(Constants.TRAIN_TOKENIZED_FILE) as f:
 		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
 		for index, line in enumerate(csv_reader):
@@ -114,7 +118,7 @@ def generate_train_features(n_examples):
 			if(n_examples > 0 and i == n_examples): break
 
 		print('Total distinct words: ', len(all_words))
-		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3)
+		X_matrices = get_sparses_matrices(corpus1,corpus2,corpus3,vocabulary=vocabulary)
 
 		# uncoment for semantic features before SVD
 		# X_matrices[0] = hstack((X_matrices[0],append_to_X1))
@@ -161,6 +165,7 @@ def generate_test_features():
 	append_to_X3 = []
 
 	vocabulary = get_train_vocabulary()
+	print("train vocabulary length:", len(vocabulary))
 	i = 0
 
 	with open(Constants.TEST_TOKENIZED_FILE) as f:
