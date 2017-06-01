@@ -161,6 +161,7 @@ def generate_test_features():
 	append_to_X3 = []
 
 	vocabulary = get_train_vocabulary()
+	i = 0
 
 	with open(Constants.TEST_TOKENIZED_FILE) as f:
 		csv_reader = csv.reader(f, delimiter=',', quotechar='"')
